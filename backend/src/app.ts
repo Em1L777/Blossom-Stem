@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import authRoutes from './routes/authRoutes.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
+import productsRoutes from './routes/productsRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -24,6 +26,8 @@ app.get('/health', (_req, res) => {
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/categories', categoriesRoutes);
+app.use('/api/v1/products', productsRoutes);
 
 // Global Error Handler Middleware (MUST be registered last)
 app.use(errorHandler);
