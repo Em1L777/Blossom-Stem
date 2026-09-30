@@ -1,0 +1,27 @@
+// backend/src/app.ts
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import { errorHandler } from './middlewares/errorHandler.js';
+
+const app = express();
+
+// Security & Parsing Middlewares
+app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
+app.use(express.json());
+
+// Healthcheck Route
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Global Error Handler Middleware (MUST be registered last)
+app.use(errorHandler);
+
+export default app;
