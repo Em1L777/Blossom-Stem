@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from '../components/MainLayout';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { RoleGuard } from '../components/RoleGuard';
+import { LoginPage } from '../pages/LoginPage';
+import { RegisterPage } from '../pages/RegisterPage';
 import {
   HomePage,
   CatalogPage,
@@ -11,8 +13,6 @@ import {
   CartPage,
   CheckoutPage,
   OrderConfirmationPage,
-  LoginPage,
-  RegisterPage,
   ProfilePage,
   FloristWorkspacePage,
   CourierWorkspacePage,
