@@ -6,10 +6,10 @@ import { ProtectedRoute } from '../components/ProtectedRoute';
 import { RoleGuard } from '../components/RoleGuard';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
+import { HomePage } from '../pages/HomePage';
+import { CatalogPage } from '../pages/CatalogPage';
+import { ProductDetailPage } from '../pages/ProductDetailPage';
 import {
-  HomePage,
-  CatalogPage,
-  ProductDetailPage,
   CartPage,
   CheckoutPage,
   OrderConfirmationPage,

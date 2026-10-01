@@ -1,126 +1,77 @@
 // backend/src/services/productsService.ts
-import { Prisma } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
 import { AppError } from '../utils/appError.js';
 
-export interface ProductQueryParams {
-  categoryId?: string;
-  isAddon?: boolean;
-  search?: string;
-  isActive?: boolean;
-}
-
 export class ProductsService {
-  private static slugify(text: string): string {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  }
+  static async getAllProducts(query: { categoryId?: string; isAddon?: boolean; search?: string }) {
+    const where: any = { isActive: true };
 
-  static async getAll(params: ProductQueryParams) {
-    const where: Prisma.ProductWhereInput = {};
-
-    if (params.categoryId) {
-      where.categoryId = params.categoryId;
+    if (query.categoryId) {
+      where.categoryId = query.categoryId;
     }
 
-    if (params.isAddon !== undefined) {
-      where.isAddon = params.isAddon;
+    if (query.isAddon !== undefined) {
+      where.isAddon = query.isAddon;
     }
 
-    if (params.isActive !== undefined) {
-      where.isActive = params.isActive;
-    } else {
-      where.isActive = true; // По умолчанию только активные товары
-    }
-
-    if (params.search) {
+    if (query.search) {
       where.OR = [
-        { title: { contains: params.search, mode: 'insensitive' } },
-        { description: { contains: params.search, mode: 'insensitive' } },
-        { composition: { contains: params.search, mode: 'insensitive' } },
+        { title: { contains: query.search, mode: 'insensitive' } },
+        { composition: { contains: query.search, mode: 'insensitive' } },
+        { description: { contains: query.search, mode: 'insensitive' } },
       ];
     }
 
     return prisma.product.findMany({
       where,
       include: {
-        category: {
-          select: { id: true, name: true, slug: true },
-        },
+        category: { select: { id: true, name: true, slug: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
   }
 
+  // Поиск по красивому URL (Slug) для страницы товара
   static async getBySlug(slug: string) {
     const product = await prisma.product.findUnique({
       where: { slug },
       include: {
-        category: {
-          select: { id: true, name: true, slug: true },
-        },
+        category: { select: { id: true, name: true, slug: true } },
       },
     });
 
     if (!product) {
-      throw AppError.notFound('Product not found');
+      throw AppError.notFound(`Product with slug '${slug}' was not found in catalog.`);
     }
 
     return product;
   }
 
-  static async create(data: any) {
-    const slug = this.slugify(data.title);
+  // Поиск по UUID для закупщика, корзины или заказов
+  static async getById(id: string) {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: { select: { id: true, name: true, slug: true } },
+      },
+    });
 
-    const existing = await prisma.product.findUnique({ where: { slug } });
-    if (existing) {
-      throw AppError.conflict('Product with this title already exists');
+    if (!product) {
+      throw AppError.notFound(`Product with ID '${id}' was not found.`);
     }
 
-    return prisma.product.create({
-      data: {
-        ...data,
-        slug,
-      },
-      include: { category: true },
-    });
+    return product;
   }
 
-  static async update(id: string, data: any) {
-    const product = await prisma.product.findUnique({ where: { id } });
-    if (!product) {
-      throw AppError.notFound('Product not found');
-    }
-
-    let slug = product.slug;
-    if (data.title && data.title !== product.title) {
-      slug = this.slugify(data.title);
-    }
-
-    return prisma.product.update({
-      where: { id },
-      data: {
-        ...data,
-        slug,
-      },
-      include: { category: true },
-    });
+  static async createProduct(data: any) {
+    return prisma.product.create({ data });
   }
 
-  static async delete(id: string) {
-    const product = await prisma.product.findUnique({ where: { id } });
-    if (!product) {
-      throw AppError.notFound('Product not found');
-    }
+  static async updateProduct(id: string, data: any) {
+    return prisma.product.update({ where: { id }, data });
+  }
 
-    // Мягкое удаление (деактивация), чтобы не ломать связь с прошлыми заказами
-    return prisma.product.update({
-      where: { id },
-      data: { isActive: false },
-    });
+  static async deleteProduct(id: string) {
+    return prisma.product.delete({ where: { id } });
   }
 }

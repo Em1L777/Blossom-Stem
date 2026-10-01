@@ -5,7 +5,7 @@ import { ProductsService } from '../services/productsService.js';
 export class ProductsController {
   static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const products = await ProductsService.getAll(req.query as any);
+      const products = await ProductsService.getAllProducts(req.query as any);
       res.json({ success: true, data: products });
     } catch (error) {
       next(error);
@@ -21,9 +21,18 @@ export class ProductsController {
     }
   }
 
+  static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const product = await ProductsService.getById(req.params.id as string);
+      res.json({ success: true, data: product });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const product = await ProductsService.create(req.body);
+      const product = await ProductsService.createProduct(req.body);
       res.status(201).json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -32,7 +41,7 @@ export class ProductsController {
 
   static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const product = await ProductsService.update(req.params.id as string, req.body);
+      const product = await ProductsService.updateProduct(req.params.id as string, req.body);
       res.json({ success: true, data: product });
     } catch (error) {
       next(error);
@@ -41,8 +50,8 @@ export class ProductsController {
 
   static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await ProductsService.delete(req.params.id as string);
-      res.json({ success: true, data: { message: 'Product deactivated successfully' } });
+      await ProductsService.deleteProduct(req.params.id as string);
+      res.json({ success: true, data: { message: 'Product deleted successfully' } });
     } catch (error) {
       next(error);
     }

@@ -2,24 +2,22 @@
 import { Router } from 'express';
 import { Role } from '@prisma/client';
 import { ProductsController } from '../controllers/productsController.js';
-import { validate } from '../middlewares/validate.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
-import {
-  createProductSchema,
-  updateProductSchema,
-  productQuerySchema,
-} from '../utils/catalogSchemas.js';
 
 const router = Router();
 
-router.get('/', validate({ query: productQuerySchema }), ProductsController.getAll);
-router.get('/:slug', ProductsController.getBySlug);
+// Public Routes
+router.get('/', ProductsController.getAll);
 
+// ⚠️ ВАЖНО: /slug/:slug идет строго ПЕРЕД /:id
+router.get('/slug/:slug', ProductsController.getBySlug);
+router.get('/:id', ProductsController.getById);
+
+// Admin / Owner Protected Routes
 router.post(
   '/',
   authenticate,
   authorize(Role.ADMIN, Role.OWNER),
-  validate({ body: createProductSchema }),
   ProductsController.create
 );
 
@@ -27,7 +25,6 @@ router.put(
   '/:id',
   authenticate,
   authorize(Role.ADMIN, Role.OWNER),
-  validate({ body: updateProductSchema }),
   ProductsController.update
 );
 
