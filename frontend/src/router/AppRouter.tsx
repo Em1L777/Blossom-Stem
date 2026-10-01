@@ -9,10 +9,10 @@ import { RegisterPage } from '../pages/RegisterPage';
 import { HomePage } from '../pages/HomePage';
 import { CatalogPage } from '../pages/CatalogPage';
 import { ProductDetailPage } from '../pages/ProductDetailPage';
+import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { OrderConfirmationPage } from '../pages/OrderConfirmationPage';
 import {
-  CartPage,
-  CheckoutPage,
-  OrderConfirmationPage,
   ProfilePage,
   FloristWorkspacePage,
   CourierWorkspacePage,

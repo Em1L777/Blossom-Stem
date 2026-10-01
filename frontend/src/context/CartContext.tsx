@@ -10,15 +10,28 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   subtotal: number;
+  totalPrice: number; // Алиас для subtotal
   totalItemsCount: number;
+  
+  // Поля для поздравительной открытки
   cardMessage: string;
+  greetingCardNote: string; // Алиас для cardMessage
+  setCardMessage: (message: string) => void;
+  setGreetingCardNote: (message: string) => void; // Алиас для setCardMessage
+
+  // Поля для логистики доставки
   deliveryDate: string;
+  setDeliveryDate: (date: string) => void;
   timeSlot: string;
+  deliverySlot: string; // Алиас для timeSlot
+  setTimeSlot: (slot: string) => void;
+  setDeliverySlot: (slot: string) => void; // Алиас для setTimeSlot
+  setDeliveryDetails: (date: string, slot: string) => void;
+
+  // Методы управления товарами
   addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  setCardMessage: (message: string) => void;
-  setDeliveryDetails: (date: string, slot: string) => void;
   clearCart: () => void;
 }
 
@@ -34,8 +47,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return localStorage.getItem('blossom_card_msg') || '';
   });
 
-  const [deliveryDate, setDeliveryDate] = useState<string>('');
-  const [timeSlot, setTimeSlot] = useState<string>('');
+  const [deliveryDate, setDeliveryDateState] = useState<string>('');
+  const [timeSlot, setTimeSlotState] = useState<string>('10:00 - 13:00');
 
   useEffect(() => {
     localStorage.setItem('blossom_cart', JSON.stringify(items));
@@ -52,7 +65,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (existingIndex > -1) {
         const updated = [...prevItems];
         const newQty = updated[existingIndex].quantity + quantity;
-        // Ограничиваем остатком на складе
         updated[existingIndex].quantity = Math.min(newQty, product.stockQuantity);
         return updated;
       }
@@ -86,16 +98,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCardMessageState(msg);
   };
 
+  const setDeliveryDate = (date: string) => {
+    setDeliveryDateState(date);
+  };
+
+  const setTimeSlot = (slot: string) => {
+    setTimeSlotState(slot);
+  };
+
   const setDeliveryDetails = (date: string, slot: string) => {
-    setDeliveryDate(date);
-    setTimeSlot(slot);
+    setDeliveryDateState(date);
+    setTimeSlotState(slot);
   };
 
   const clearCart = () => {
     setItems([]);
     setCardMessageState('');
-    setDeliveryDate('');
-    setTimeSlot('');
+    setDeliveryDateState('');
+    setTimeSlotState('10:00 - 13:00');
     localStorage.removeItem('blossom_cart');
     localStorage.removeItem('blossom_card_msg');
   };
@@ -112,15 +132,25 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         items,
         subtotal,
+        totalPrice: subtotal,
         totalItemsCount,
+
         cardMessage,
+        greetingCardNote: cardMessage,
+        setCardMessage,
+        setGreetingCardNote: setCardMessage,
+
         deliveryDate,
+        setDeliveryDate,
         timeSlot,
+        deliverySlot: timeSlot,
+        setTimeSlot,
+        setDeliverySlot: setTimeSlot,
+        setDeliveryDetails,
+
         addToCart,
         removeFromCart,
         updateQuantity,
-        setCardMessage,
-        setDeliveryDetails,
         clearCart,
       }}
     >
