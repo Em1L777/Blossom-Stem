@@ -73,10 +73,21 @@ export const Header: React.FC = () => {
 
           {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-[#404944]">{user.firstName || user.email}</span>
+              {/* 💡 КЛИКАБЕЛЬНОЕ ИМЯ И ПОЛЬЗОВАТЕЛЬСКАЯ ССЫЛКА НА ПРОФИЛЬ */}
+              <Link
+                to="/profile"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#fafaf9] border border-[#e2e2e2] hover:border-[#064e3b] hover:text-[#064e3b] transition cursor-pointer"
+                title="View Personal Profile & History"
+              >
+                <span>👤</span>
+                <span className="font-bold text-[#1a1c1c] hover:text-[#064e3b]">
+                  {user.firstName || user.email.split('@')[0]}
+                </span>
+              </Link>
+
               <button
                 onClick={handleLogout}
-                className="text-[#9f1239] hover:underline transition"
+                className="text-[#9f1239] hover:underline transition text-[11px]"
               >
                 Logout
               </button>

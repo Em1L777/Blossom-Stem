@@ -19,9 +19,10 @@ import { CourierWorkspacePage } from '../pages/CourierWorkspacePage';
 import { AdminDashboardPage } from '../pages/AdminDashboardPage';
 import { AdminCatalogPage } from '../pages/AdminCatalogPage';
 import { AdminSuppliesPage } from '../pages/AdminSuppliesPage';
+import { AdminUsersPage } from '../pages/AdminUsersPage';
+import { ProfilePage } from '../pages/ProfilePage';
 
 import {
-  ProfilePage,
   AdminAnalyticsPage,
 } from '../pages/DummyPages';
 
@@ -60,6 +61,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/workspace/admin" element={<AdminDashboardPage />} />
             <Route path="/admin/catalog" element={<AdminCatalogPage />} />
             <Route path="/admin/supplies" element={<AdminSuppliesPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
 
           {/* Exclusive Owner Analytics */}

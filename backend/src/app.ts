@@ -8,6 +8,7 @@ import productsRoutes from './routes/productsRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
 import suppliesRoutes from './routes/suppliesRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import usersRoutes from './routes/usersRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/v1/products', productsRoutes);
 app.use('/api/v1/orders', ordersRoutes);
 app.use('/api/v1/supplies', suppliesRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/users', usersRoutes);
 
 // Global Error Handler Middleware (MUST be registered last)
 app.use(errorHandler);
